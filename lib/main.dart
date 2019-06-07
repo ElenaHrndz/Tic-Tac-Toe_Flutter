@@ -1,90 +1,82 @@
 import 'package:flutter/material.dart';
 
+import 'game.dart';
+import 'credits.dart';
+
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget{
+class MyApp extends StatelessWidget{
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _MyAppState();
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+      theme: ThemeData(
+        buttonColor: Colors.green,
+        backgroundColor: Colors.blue,
+        primaryColor: Colors.black,
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.green
+        )
+      ),
+      routes: <String, WidgetBuilder>{
+        '/game': (BuildContext context) => new MyGame(),
+        '/credits': (BuildContext context)=> new Credits()
+      },
+      home: TicTacToeGame(),
+    );
   }
 }
 
-class _MyAppState extends State<StatefulWidget> {
-  List<String> strings = new List<String>(9);
-  bool isX = true;
-
-  void printSomething(int number){
-    if(strings[number] == ''){
-      if(isX){
-        strings[number] = 'x';
-      }
-      else
-      {
-        strings[number] = 'o';
-      }
-      isX = !isX;
-      print(strings[number]);
-      setState(() {
-        
-      });
-    }
-
-  }
-  
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    for(int i = 0; i < 9;i++){
-      strings[i] = '';
-    }
-  }
-
-  Widget gameButton(int numberToSet){
-    return RaisedButton(
-      onPressed: ()=>printSomething(numberToSet),
-      child: Text(
-        strings[numberToSet]
-      ),
-    );
-  }
+class TicTacToeGame extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Tic-Tac-Toe'),
-        ),
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  gameButton(0),
-                  gameButton(1),
-                  gameButton(2)
-                ],
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            
+            SizedBox(
+              height: 200.0,
+            ),
+            Text(
+              'Tic-Tac-Toe',
+              style: TextStyle(
+                fontSize: 80
               ),
-              Row(
-                children: <Widget>[
-                  gameButton(3),
-                  gameButton(4),
-                  gameButton(5)
-                ],
+            ),
+            SizedBox(
+              height: 100.0,
+            ),
+            RaisedButton(
+              child: Icon(
+                Icons.play_arrow,
+                size: 60,
               ),
-              Row(
-                children: <Widget>[
-                  gameButton(6),
-                  gameButton(7),
-                  gameButton(8)
-                ],
-              )
-            ],
-          ),
+              onPressed:(){
+                Navigator.pushNamed(context, '/game');
+              },
+            ),
+            SizedBox(
+              height: 200.0,
+            ),
+            Align(
+              child:FloatingActionButton(
+                child: Icon(
+                  Icons.info
+                ),
+                onPressed: (){
+                  Navigator.pushNamed(context, '/credits');
+                },
+              ),
+              alignment: Alignment.bottomRight,
+            )
+
+          ],
         ),
-      ),
+      )
     );
   }
 }
