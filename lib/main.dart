@@ -8,7 +8,6 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
       theme: ThemeData(
         buttonColor: Colors.green,
@@ -39,7 +38,7 @@ class TicTacToeGame extends StatelessWidget{
           children: <Widget>[
             
             SizedBox(
-              height: 200.0,
+              height: 150.0,
             ),
             Text(
               'Tic-Tac-Toe',
@@ -60,7 +59,7 @@ class TicTacToeGame extends StatelessWidget{
               },
             ),
             SizedBox(
-              height: 200.0,
+              height: 100.0,
             ),
             Align(
               child:FloatingActionButton(
