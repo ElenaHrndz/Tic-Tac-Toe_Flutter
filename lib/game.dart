@@ -25,7 +25,7 @@ class _MyGameState extends State<StatefulWidget> {
       }
       isX = !isX;
       hasAWinner = theresAMatch(coordenates);
-      if(!positions.containsValue('') || hasAWinner){
+      if (!positions.containsValue('') || hasAWinner) {
         itsGameFinish = true;
       }
       setState(() {});
@@ -43,7 +43,7 @@ class _MyGameState extends State<StatefulWidget> {
     hasAWinner = false;
     itsGameFinish = false;
     for (int i = 0; i < 3; i++) {
-      for(int j = 0; j < 3;j++){
+      for (int j = 0; j < 3; j++) {
         int x = i;
         int y = j;
         String s = '$x,$y';
@@ -53,34 +53,34 @@ class _MyGameState extends State<StatefulWidget> {
     setState(() {});
   }
 
-  bool theresAMatch(String coordenateString){
-    if(hasAVerticalMatch(coordenateString)){
+  bool theresAMatch(String coordenateString) {
+    if (hasAVerticalMatch(coordenateString)) {
       return true;
     }
-    if(hasAHorizontalMatch(coordenateString)){
+    if (hasAHorizontalMatch(coordenateString)) {
       return true;
     }
-    if(hasADiagonalMatch(coordenateString)){
+    if (hasADiagonalMatch(coordenateString)) {
       return true;
     }
     return false;
   }
 
-  bool hasADiagonalMatch(String coordenateString){
+  bool hasADiagonalMatch(String coordenateString) {
     var value = positions[coordenateString];
 
     bool hasCondition = true;
 
-    for(int i = 0; i< 3;i++){
-      if(positions['$i,$i'] != value){
+    for (int i = 0; i < 3; i++) {
+      if (positions['$i,$i'] != value) {
         hasCondition = false;
       }
     }
-    if(!hasCondition){
+    if (!hasCondition) {
       hasCondition = true;
-      for(int i=0; i< 3;i++){
-        int yValue = 2-i;
-        if(positions['$i,$yValue'] != value){
+      for (int i = 0; i < 3; i++) {
+        int yValue = 2 - i;
+        if (positions['$i,$yValue'] != value) {
           return false;
         }
       }
@@ -89,71 +89,80 @@ class _MyGameState extends State<StatefulWidget> {
     return hasCondition;
   }
 
-
-  bool hasAVerticalMatch(String coordenateString){
+  bool hasAVerticalMatch(String coordenateString) {
     var coordenates = coordenateString.split(',');
     var value = positions[coordenateString];
 
-    for(int i = 0; i < 3; i++){
-      if(positions['${coordenates[0]},$i'] != value){
+    for (int i = 0; i < 3; i++) {
+      if (positions['${coordenates[0]},$i'] != value) {
         return false;
       }
     }
     return true;
   }
 
-  bool hasAHorizontalMatch(String coordenateString){
+  bool hasAHorizontalMatch(String coordenateString) {
     var coordenates = coordenateString.split(',');
     var value = positions[coordenateString];
-    for(int i = 0; i < 3; i++){
-      if(positions['$i,${coordenates[1]}'] != value){
+    for (int i = 0; i < 3; i++) {
+      if (positions['$i,${coordenates[1]}'] != value) {
         return false;
       }
     }
     return true;
   }
 
-  IconData iconToSet(String sign){
-    return sign == 'x'?Icons.brightness_5:Icons.brightness_3;
+  IconData iconToSet(String sign) {
+    return sign == 'x' ? Icons.brightness_5 : Icons.brightness_3;
   }
 
   ///This is the button you press to set a value
   Widget gameButton(int numberOfRow, int numberOfColum) {
     String coordenates = '$numberOfColum,$numberOfRow';
     return Expanded(
-      flex: 35,
-      child: Container(
-        height: MediaQuery.of(context).size.height/5.5,
-        child: FlatButton(
-          onPressed: () => printSomething(coordenates),
-          child: positions[coordenates] != ''
-              ? Icon(iconToSet(positions[coordenates]))
-              : Icon(null),
-          color: Colors.green,
-          textColor: Colors.yellow,
-        ),
-      )
-    );
-  }
-  
-  Widget gameRow(int numberOfRow){
-    return Expanded(
-      flex: 30,
-      child: Flex(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[gameButton(numberOfRow, 0), ExpandedBox(12), gameButton(numberOfRow, 1), ExpandedBox(12),gameButton(numberOfRow, 2)],
-      )
-    );
+        flex: 35,
+        child: Container(
+          height: MediaQuery.of(context).size.height / 5.5,
+          child: FlatButton(
+            onPressed: () => printSomething(coordenates),
+            child: positions[coordenates] != ''
+                ? Icon(iconToSet(positions[coordenates]), size: 50)
+                : Icon(null),
+            color: Color(0xFFFEEAE6),
+            textColor: Color(0xFFC5032B),
+          ),
+        ));
   }
 
-  List<Widget> winObjects(){
-    return <Widget> [
-      Text('The winer is:'),
-      ExpandedBox(5),
-      Icon(isX? Icons.brightness_3:Icons.brightness_5)
+  Widget gameRow(int numberOfRow) {
+    return Expanded(
+        flex: 30,
+        child: Flex(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            ExpandedBox(5),
+            gameButton(numberOfRow, 0),
+            ExpandedBox(12),
+            gameButton(numberOfRow, 1),
+            ExpandedBox(12),
+            gameButton(numberOfRow, 2),
+            ExpandedBox(5)
+          ],
+        ));
+  }
+
+  List<Widget> winObjects() {
+    return <Widget>[
+      ExpandedBox(1),
+      Text('The winer is:',
+          style:
+              TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFFBB8AC), fontSize: 50)),
+      Icon(isX ? Icons.brightness_3 : Icons.brightness_5, color:Color(0xFFC5032B), size: 50),
+      ExpandedBox(1),
     ];
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,22 +176,27 @@ class _MyGameState extends State<StatefulWidget> {
           ),
         ],
       ),
-      body:  Center(
-        child: !itsGameFinish ? Flex(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            gameRow(2),
-            gameRow(1),
-            gameRow(0)
-          ],
-        ): Flex(
-          direction: Axis.vertical,
-          children: hasAWinner?winObjects():<Widget>[
-            Text('its a tie')
-          ],
-        )
-      ),
+      body: Center(
+          child: !itsGameFinish
+              ? Flex(
+                  direction: Axis.vertical,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[gameRow(2), gameRow(1), gameRow(0)],
+                )
+              : Flex(
+                  direction: Axis.vertical,
+                  children: hasAWinner
+                      ? winObjects()
+                      : <Widget>[
+                          ExpandedBox(1),
+                          Text('its a tie',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFFBB8AC),
+                                  fontSize: 50)),
+                          ExpandedBox(1)
+                        ],
+                )),
     );
   }
 }
