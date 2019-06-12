@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './widgets/expandedbox.dart';
+
 class MyGame extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -111,30 +113,47 @@ class _MyGameState extends State<StatefulWidget> {
     return true;
   }
 
+  IconData iconToSet(String sign){
+    return sign == 'x'?Icons.brightness_5:Icons.brightness_3;
+  }
+
   ///This is the button you press to set a value
   Widget gameButton(int numberOfRow, int numberOfColum) {
     String coordenates = '$numberOfColum,$numberOfRow';
-    return FlatButton(
-      onPressed: () => printSomething(coordenates),
-      child: positions[coordenates] != ''
-          ? Icon(positions[coordenates] == 'x'
-              ? Icons.brightness_5
-              : Icons.brightness_3)
-          : Icon(null),
-      color: Colors.green,
-      textColor: Colors.yellow,
-  
-      padding: EdgeInsets.all(45.0),
+    return Expanded(
+      flex: 35,
+      child: Container(
+        height: MediaQuery.of(context).size.height/5.5,
+        child: FlatButton(
+          onPressed: () => printSomething(coordenates),
+          child: positions[coordenates] != ''
+              ? Icon(iconToSet(positions[coordenates]))
+              : Icon(null),
+          color: Colors.green,
+          textColor: Colors.yellow,
+        ),
+      )
     );
   }
   
   Widget gameRow(int numberOfRow){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[gameButton(numberOfRow, 0), gameButton(numberOfRow, 1), gameButton(numberOfRow, 2)],
+    return Expanded(
+      flex: 30,
+      child: Flex(
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[gameButton(numberOfRow, 0), ExpandedBox(12), gameButton(numberOfRow, 1), ExpandedBox(12),gameButton(numberOfRow, 2)],
+      )
     );
   }
 
+  List<Widget> winObjects(){
+    return <Widget> [
+      Text('The winer is:'),
+      ExpandedBox(5),
+      Icon(isX? Icons.brightness_3:Icons.brightness_5)
+    ];
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,15 +167,21 @@ class _MyGameState extends State<StatefulWidget> {
           ),
         ],
       ),
-      body: Center(
-        child: !itsGameFinish ? Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body:  Center(
+        child: !itsGameFinish ? Flex(
+          direction: Axis.vertical,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             gameRow(2),
             gameRow(1),
             gameRow(0)
           ],
-        ): Text(hasAWinner?"Some one win":"Its a tie")
+        ): Flex(
+          direction: Axis.vertical,
+          children: hasAWinner?winObjects():<Widget>[
+            Text('its a tie')
+          ],
+        )
       ),
     );
   }
