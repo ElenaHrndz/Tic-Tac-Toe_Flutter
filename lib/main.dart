@@ -16,7 +16,38 @@ class MyApp extends StatelessWidget {
         '/credits': (BuildContext context) => new Credits()
       },
       home: TicTacToeGame(),
-      theme: _ticTheam,
+      theme: buildTicTheme(),
+    );
+  }
+
+  ThemeData buildTicTheme() {
+    final ThemeData base = ThemeData.light();
+    var theme = selectTheme(0);
+    return base.copyWith(
+      primaryColor: theme.primary,
+      accentColor: theme.accent,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: theme.fbColor,
+        foregroundColor: theme.ffColor
+      ),
+      buttonColor: theme.ffColor,
+      textTheme: base.textTheme.copyWith(
+        title: TextStyle(
+          color: theme.primary,
+          fontWeight: FontWeight.bold,
+          fontSize: 60,
+        ),
+        subtitle: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: theme.stColor,
+          fontSize: 50
+        ),
+        display1: TextStyle(
+          fontSize: 25,
+          color: theme.accent
+        )
+      ),
+      scaffoldBackgroundColor: theme.backgroud,
     );
   }
 }
@@ -31,17 +62,21 @@ class TicTacToeGame extends StatelessWidget {
       children: <Widget>[
         ExpandedBox(20),
         Expanded(
-          child: Text('Tic Tac Toe',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: Color(0xFFC5032B), fontSize: 60)),
+          child: Text(
+            'Tic Tac Toe',
+            style: Theme.of(context).textTheme.title,
+          ),
           flex: 20,
         ),
         ExpandedBox(5),
         Expanded(
           child: FloatingActionButton(
-            child: Icon(Icons.play_arrow, size: 50),
-            foregroundColor: Color(0xFFC5032B),
-            backgroundColor: Color(0xFFFEEAE6),
+            child: Icon(
+              Icons.play_arrow, 
+              size: 50,
+            ),
+            foregroundColor: Theme.of(context).accentColor,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.foregroundColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0))),
             heroTag: 'play',
@@ -59,8 +94,6 @@ class TicTacToeGame extends StatelessWidget {
             Expanded(
               child: FloatingActionButton(
                 child: Icon(Icons.info),
-                foregroundColor: Color(0xFFC5032B),
-                backgroundColor: Color(0xFFFEEAE6),
                 heroTag: 'info',
                 onPressed: () {
                   Navigator.pushNamed(context, '/credits');
@@ -68,7 +101,7 @@ class TicTacToeGame extends StatelessWidget {
               ),
               flex: 10,
             ),
-            ExpandedBox(5)
+            ExpandedBox(5),
           ],
         ),
         ExpandedBox(5)
@@ -77,20 +110,4 @@ class TicTacToeGame extends StatelessWidget {
   }
 }
 
-final ThemeData _ticTheam = _buildTicTheam();
 
-ThemeData _buildTicTheam() {
-  final ThemeData base = ThemeData.light();
-  return base.copyWith(
-    accentColor: ticColor300,
-    primaryColor: ticColor100,
-    buttonTheme: base.buttonTheme.copyWith(
-      buttonColor: ticColor400,
-      // textTheme: ButtonTextTheme.normal,
-    ),
-    scaffoldBackgroundColor: ticBackgroundWhite,
-    cardColor: ticBackgroundWhite,
-    textSelectionColor: ticColor,
-    errorColor: ticErrorRed,
-  );
-}

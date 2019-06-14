@@ -128,8 +128,8 @@ class _MyGameState extends State<StatefulWidget> {
             child: positions[coordenates] != ''
                 ? Icon(iconToSet(positions[coordenates]), size: 50)
                 : Icon(null),
-            color: Color(0xFFFEEAE6),
-            textColor: Color(0xFFC5032B),
+            color: Theme.of(context).buttonColor,
+            textColor: Theme.of(context).accentColor,
           ),
         ));
   }
@@ -154,12 +154,18 @@ class _MyGameState extends State<StatefulWidget> {
 
   List<Widget> winObjects() {
     return <Widget>[
-      ExpandedBox(1),
-      Text('The winer is:',
-          style:
-              TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFFBB8AC), fontSize: 50)),
-      Icon(isX ? Icons.brightness_3 : Icons.brightness_5, color:Color(0xFFC5032B), size: 50),
-      ExpandedBox(1),
+      ExpandedBox(10),
+      Text(
+        'The winer is:',
+        style: Theme.of(context).textTheme.subtitle 
+      ),
+      ExpandedBox(2),
+      Icon(
+        isX ? Icons.brightness_3 : Icons.brightness_5,
+        color: Theme.of(context).accentColor, 
+        size: 50
+      ),
+      ExpandedBox(10),
     ];
   }
 
@@ -177,26 +183,45 @@ class _MyGameState extends State<StatefulWidget> {
         ],
       ),
       body: Center(
-          child: !itsGameFinish
-              ? Flex(
-                  direction: Axis.vertical,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[gameRow(2), gameRow(1), gameRow(0)],
-                )
-              : Flex(
-                  direction: Axis.vertical,
-                  children: hasAWinner
-                      ? winObjects()
-                      : <Widget>[
-                          ExpandedBox(1),
-                          Text('its a tie',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFFBB8AC),
-                                  fontSize: 50)),
-                          ExpandedBox(1)
-                        ],
-                )),
+        child: !itsGameFinish
+            ? Flex(
+                direction: Axis.vertical,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Flex(
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      ExpandedBox(20),
+                      Text(
+                        'Turn',
+                        style: Theme.of(context).textTheme.display1,
+                      ),
+                      ExpandedBox(2),
+                      Icon(
+                        isX?iconToSet('x'):iconToSet('o'),
+                        color: Theme.of(context).accentColor
+                      ),
+                      ExpandedBox(20)
+                    ],
+                  ),
+                  gameRow(2), 
+                  gameRow(1), 
+                  gameRow(0)
+                ],
+              )
+            : Flex(
+                direction: Axis.vertical,
+                children: hasAWinner
+                    ? winObjects()
+                    : <Widget>[
+                        ExpandedBox(1),
+                        Text(
+                          'its a tie',
+                          style: Theme.of(context).textTheme.subtitle 
+                        ),
+                        ExpandedBox(1)
+                      ],
+              )),
     );
   }
 }

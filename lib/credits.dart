@@ -9,7 +9,11 @@ class Credits extends StatelessWidget{
       ),
         body:Container(
         alignment: Alignment.center,
-        child: Text('All\nMaria Elena Hernandez Payan'),
+        child: Text(
+          'Made by\n\nMaria Elena Hernandez Payan',
+          style: Theme.of(context).textTheme.title,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
 
