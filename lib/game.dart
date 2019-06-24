@@ -113,7 +113,7 @@ class _MyGameState extends State<StatefulWidget> {
   }
 
   IconData iconToSet(String sign) {
-    return sign == 'x' ? Icons.brightness_5 : Icons.brightness_3;
+    return sign == 'x' ? Icons.brightness_7 : Icons.brightness_3;
   }
 
   ///This is the button you press to set a value
@@ -156,12 +156,12 @@ class _MyGameState extends State<StatefulWidget> {
     return <Widget>[
       ExpandedBox(10),
       Text(
-        'The winer is:',
+        'The winner is:',
         style: Theme.of(context).textTheme.subtitle 
       ),
       ExpandedBox(2),
       Icon(
-        isX ? Icons.brightness_3 : Icons.brightness_5,
+        isX ? Icons.brightness_3 : Icons.brightness_7,
         color: Theme.of(context).accentColor, 
         size: 50
       ),
@@ -216,7 +216,7 @@ class _MyGameState extends State<StatefulWidget> {
                     : <Widget>[
                         ExpandedBox(1),
                         Text(
-                          'its a tie',
+                          'Its a tie',
                           style: Theme.of(context).textTheme.subtitle 
                         ),
                         ExpandedBox(1)

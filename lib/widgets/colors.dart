@@ -11,6 +11,8 @@ class MainTheme{
   MainTheme(this.backgroud, this.primary, this.accent, this.fbColor, this.ffColor, this.stColor);
 }
 
+int numberOfThemes = 3;
+
 MainTheme selectTheme(int kind){
   switch(kind){
     case 0:
@@ -24,12 +26,21 @@ MainTheme selectTheme(int kind){
       );
     case 1:
       return MainTheme(
-        Colors.brown[800],
-        Colors.yellowAccent[400],
-        Colors.lightGreenAccent[400],
+        Colors.lightBlue[400],
+        Colors.blue[900],
+        Colors.blue,
         Colors.lightBlueAccent,
-        Colors.purple,
-        Colors.teal
+        Colors.blue[100],
+        Colors.teal[50]
+      );
+    case 2:
+      return MainTheme(
+        Colors.pink[50],
+        Colors.blue[900],
+        Colors.purple[900],
+        Colors.purple[600],
+        Colors.pinkAccent[700],
+        Colors.pink[100]
       );
     default:
       return MainTheme(

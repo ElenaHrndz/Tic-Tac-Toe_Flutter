@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './widgets/colors.dart';
 import 'game.dart';
@@ -7,22 +10,68 @@ import './widgets/expandedbox.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class _ThemeManager{
+  int _savedTheme = 0;
+  int _selectedTheme = 0;
+
+  SharedPreferences prefs;
+
+  void getPrefs()async{
+    prefs = await SharedPreferences.getInstance();
+    var saved = prefs.getInt('theme');
+    _savedTheme = saved;
+    updateTheme(_savedTheme);
+  }
+
+  StreamController themeController = StreamController<int>();
+  Stream<int> get selectedUpdate => themeController.stream;
+
+  void updateTheme(int newTheme){
+    _selectedTheme = newTheme;
+    themeController.add(_selectedTheme);
+    prefs.setInt('theme', newTheme);
+  }
+}
+
+var themeManager = _ThemeManager();
+
+
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() {
+    return _MyAppState();
+  }
+}
+
+class _MyAppState extends State<MyApp>{
+
+  @override
+  void initState() {
+    super.initState();
+    themeManager.getPrefs();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: <String, WidgetBuilder>{
-        '/game': (BuildContext context) => new MyGame(),
-        '/credits': (BuildContext context) => new Credits()
+    return StreamBuilder(
+      stream: themeManager.selectedUpdate,
+      initialData: 0,
+      builder: (context, snapShot){
+        return MaterialApp(
+          routes: <String, WidgetBuilder>{
+            '/game': (BuildContext context) => new MyGame(),
+            '/credits': (BuildContext context) => new Credits()
+          },
+          home: MainMenu(),
+          theme: buildTicTheme(snapShot),
+        );
       },
-      home: TicTacToeGame(),
-      theme: buildTicTheme(),
     );
   }
 
-  ThemeData buildTicTheme() {
+  ThemeData buildTicTheme(dynamic theme) {
     final ThemeData base = ThemeData.light();
-    var theme = selectTheme(0);
+    var theme = selectTheme(themeManager._selectedTheme);
     return base.copyWith(
       primaryColor: theme.primary,
       accentColor: theme.accent,
@@ -52,11 +101,32 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class TicTacToeGame extends StatelessWidget {
+class MainMenu extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Flex(
+  State<MainMenu> createState() {
+    return _MainMenuState();
+  }
+}
+
+class _MainMenuState extends State<MainMenu>{
+  bool isMenuTime = true;
+
+  void showThemeMenu(){
+    isMenuTime = false;
+    setState(() {
+      
+    });
+  }
+
+  void hideThemeMenu(){
+    isMenuTime = true;
+    setState(() {
+      
+    });
+  }
+
+  Widget _normalMenu(BuildContext context){
+    return Flex(
       direction: Axis.vertical,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -71,6 +141,7 @@ class TicTacToeGame extends StatelessWidget {
         ExpandedBox(5),
         Expanded(
           child: FloatingActionButton(
+            // elevation: 50,
             child: Icon(
               Icons.play_arrow, 
               size: 50,
@@ -90,23 +161,153 @@ class TicTacToeGame extends StatelessWidget {
         Flex(
           direction: Axis.horizontal,
           children: <Widget>[
-            ExpandedBox(85),
+            ExpandedBox(5),
+              Expanded(
+              child: FloatingActionButton(
+                elevation: 100,
+                child: Icon(Icons.menu),
+                // heroTag: 'info',
+                onPressed: showThemeMenu,
+              ),
+              flex: 15,
+            ),
             Expanded(
               child: FloatingActionButton(
+                elevation: 100,
                 child: Icon(Icons.info),
                 heroTag: 'info',
                 onPressed: () {
                   Navigator.pushNamed(context, '/credits');
                 },
               ),
-              flex: 10,
+              flex: 15,
             ),
             ExpandedBox(5),
           ],
         ),
         ExpandedBox(5)
       ],
-    ));
+    );
+  }
+
+  Widget _themeMenu(){
+    var minwidth = MediaQuery.of(context).size.width/1.1;
+    var minHeight = MediaQuery.of(context).size.height/1.2;
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        width: minwidth,
+        height: minHeight,
+        child: Card(
+          color: Theme.of(context).buttonColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    width: minwidth/10,
+                    height: minHeight/10,
+                    child: FloatingActionButton(
+                      child: Icon(
+                        Icons.close
+                      ),
+                      onPressed: (){
+                        themeManager.updateTheme(themeManager._savedTheme);
+                        hideThemeMenu();
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: minwidth/50,
+                  )
+                ],
+              ),
+              Text(
+                'Themes',
+                style: Theme.of(context).textTheme.subtitle.copyWith(
+                  fontSize: 45
+                ),
+              ),
+              Container(
+                height: minHeight/1.8,
+                child: ListView.builder(
+                  itemBuilder: (context, item){
+                    return themeButton(item);
+                  },
+                  itemCount: numberOfThemes,
+                ),
+              ),
+              Container(
+                width: minwidth/8,
+                height: minHeight/8,
+                child: FloatingActionButton(
+                  child: Icon(
+                    Icons.check
+                  ),
+                  onPressed: (){
+                    themeManager._savedTheme = themeManager._selectedTheme;
+                    hideThemeMenu();
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget themeButton(int themeColors){
+    var theme = selectTheme(themeColors);
+    return Container(
+      height: MediaQuery.of(context).size.height/1.2/6,
+      child: Card(
+        color: theme.backgroud,
+        child: InkWell(
+          onTap: (){
+            themeManager.updateTheme(themeColors);
+            setState(() {
+              
+            });
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(
+                'Tic Tac Toe',
+                style: TextStyle(
+                  color: theme.stColor
+                ),
+              ),
+              Card(
+                color: theme.ffColor,
+                child: Icon(null),
+              ),
+              Icon(
+                Icons.brightness_7,
+                color: theme.accent,
+              ),
+              Icon(
+                Icons.brightness_3,
+                color: theme.accent,
+              )
+            ],
+          ),
+        )
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: isMenuTime? 
+      _normalMenu(context): 
+      _themeMenu()
+    );
   }
 }
 
