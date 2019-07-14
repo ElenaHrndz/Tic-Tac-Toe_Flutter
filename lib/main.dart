@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 
 import './widgets/colors.dart';
 import 'game.dart';
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp>{
             '/game': (BuildContext context) => new MyGame(),
             '/credits': (BuildContext context) => new Credits()
           },
-          home: MainMenu(),
+          home: SplashScreen(),
           theme: buildTicTheme(snapShot),
         );
       },
@@ -97,6 +98,40 @@ class _MyAppState extends State<MyApp>{
         )
       ),
       scaffoldBackgroundColor: theme.backgroud,
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return _SplashScreenState();
+  }
+}
+
+class _SplashScreenState extends State<SplashScreen>{
+  AssetsAudioPlayer assetsAudioPlayer;
+  @override
+  void initState() {
+    super.initState();
+    assetsAudioPlayer = AssetsAudioPlayer();
+    assetsAudioPlayer.open(
+      AssetsAudio(
+        asset: "audio.mp3",
+        folder: "assets/audios/",
+      ),
+    );
+    print('da');
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Image.asset('assets/board.png'),
+      ),
     );
   }
 }
