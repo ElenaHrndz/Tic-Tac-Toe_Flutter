@@ -60,6 +60,7 @@ class _MyAppState extends State<MyApp>{
       builder: (context, snapShot){
         return MaterialApp(
           routes: <String, WidgetBuilder>{
+            '/home': (BuildContext context) => new MainMenu(),
             '/game': (BuildContext context) => new MyGame(),
             '/credits': (BuildContext context) => new Credits()
           },
@@ -117,20 +118,34 @@ class _SplashScreenState extends State<SplashScreen>{
     assetsAudioPlayer = AssetsAudioPlayer();
     assetsAudioPlayer.open(
       AssetsAudio(
-        asset: "audio.mp3",
+        asset: "Barrica_Games.mp3",
         folder: "assets/audios/",
       ),
     );
-    print('da');
+    changeRoute();
   }
 
+
+  void changeRoute()async {
+    await wait();
+    nowChange();
+  }
+
+  Future wait()async{
+
+    return Future.delayed(Duration(seconds: 5));
+  }
+
+  void nowChange(){
+    Navigator.pushNamed(context, '/home');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Image.asset('assets/board.png'),
+        child: Image.asset('assets/barrica_games.png'),
       ),
     );
   }
